@@ -61,7 +61,7 @@ if prompt:
     # Get Barb's response
     with st.chat_message("assistant"):
         with st.spinner("Barb is thinking..."):
-            client = anthropic.Anthropic()
+            client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
             response = client.messages.create(
                 model="claude-sonnet-4-20250514",
                 max_tokens=1024,
