@@ -55,8 +55,8 @@ def get_pioneer_level(questions):
 
 # Sidebar
 with st.sidebar:
+    st.image("logo.png", width=200)
     st.markdown("## Digital Pioneer")
-    st.markdown("*by 50+TechBridge*")
     st.markdown("---")
 
     page = st.radio("Navigate", ["Home", "Ask Barb", "My Progress", "Resources"], label_visibility="collapsed")
@@ -104,6 +104,7 @@ categories = {
 # ---------- PAGES ----------
 
 if page == "Home":
+    st.image("logo.png", width=400)
     st.title("Digital Pioneer")
     st.subheader("AI & Digital Skills for Adults 50+")
     st.markdown("Welcome! This app helps you learn how to use AI to stay independent, safe, and connected.")
