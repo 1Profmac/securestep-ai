@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home1/ghosnhmy/securestep.ai/
+    - /bin/cp -r $TRAVIS_BUILD_DIR/. $DEPLOYPATH
