@@ -2,3 +2,5 @@
 deployment:
   tasks:
     - /bin/cp -r /home1/ghosnhmy/repos/securestep/. /home1/ghosnhmy/securestep.ai/
+    - /bin/chmod 755 /home1/ghosnhmy/securestep.ai
+    - /bin/find /home1/ghosnhmy/securestep.ai -type f -name "*.html" -exec /bin/chmod 644 {} \;
