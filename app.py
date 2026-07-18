@@ -172,6 +172,14 @@ hr {
     border-color: #1E3A5F !important;
 }
 
+/* Barb circular photo */
+section[data-testid="stSidebar"] .stImage img {
+    border-radius: 50% !important;
+    border: 3px solid #C8942E !important;
+    display: block;
+    margin: 0 auto;
+}
+
 /* Sidebar text */
 section[data-testid="stSidebar"] h1,
 section[data-testid="stSidebar"] h2,
@@ -398,6 +406,11 @@ with st.sidebar:
     except Exception:
         pass
 
+    try:
+        st.image("barb-avatar.png", width=100)
+    except Exception:
+        pass
+
     st.markdown("""
     <div style="margin-top: 4px; margin-bottom: 2px;">
         <span style="font-family:'Playfair Display',serif; font-size:26px; font-weight:800; color:#C8942E;">Ask Barb</span><br>
@@ -444,12 +457,19 @@ if "nav_to" in st.session_state:
 # HOME PAGE
 # ══════════════════════════════════════════════════════════════════════════════
 if page == "Home":
-    st.markdown("""
-    <h1 style="font-family:'Playfair Display',serif; font-size:3rem; color:#C8942E; margin-bottom:4px;">
-        Hi, I'm Barb.
-    </h1>
-    <p class="lmt-hero-sub">Your AI guide for independent living.</p>
-    """, unsafe_allow_html=True)
+    hero_col1, hero_col2 = st.columns([1, 3])
+    with hero_col1:
+        try:
+            st.image("barb-avatar.png", use_container_width=True)
+        except Exception:
+            pass
+    with hero_col2:
+        st.markdown("""
+        <h1 style="font-family:'Playfair Display',serif; font-size:3rem; color:#C8942E; margin-bottom:4px;">
+            Hi, I'm Barb.
+        </h1>
+        <p class="lmt-hero-sub">Your AI guide for independent living.</p>
+        """, unsafe_allow_html=True)
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
