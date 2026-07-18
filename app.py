@@ -423,7 +423,8 @@ with st.sidebar:
     page = st.radio(
         "Navigate",
         ["Home", "Ask Barb", "My Progress", "Resources"],
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        key="nav_page"
     )
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:12px 0;'>", unsafe_allow_html=True)
@@ -451,7 +452,7 @@ with st.sidebar:
 
 # ── Handle nav_to (Home quick-start buttons) ─────────────────────────────────
 if "nav_to" in st.session_state:
-    del st.session_state["nav_to"]
+    st.session_state["nav_page"] = st.session_state.pop("nav_to")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # HOME PAGE
