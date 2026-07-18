@@ -582,32 +582,44 @@ elif page == "Ask Barb":
             st.markdown(prompt)
 
         with st.chat_message("assistant"):
-            api_key = os.environ.get("ANTHROPIC_API_KEY") or st.secrets.get("ANTHROPIC_API_KEY")
-            client = anthropic.Anthropic(api_key=api_key)
+            try:
+                api_key = os.environ.get("ANTHROPIC_API_KEY")
+                if not api_key:
+                    api_key = st.secrets.get("ANTHROPIC_API_KEY")
+                if not api_key:
+                    st.error("Barb is unavailable right now — API key not configured. Please contact support.")
+                    st.stop()
 
-            with client.messages.stream(
-                model="claude-sonnet-4-6",
-                max_tokens=1024,
-                system="""You are Barb, a warm, patient AI guide who helps adults over 50
-                learn how to use AI and technology for independent living.
+                client = anthropic.Anthropic(api_key=api_key)
 
-                Rules:
-                - Use simple, clear language. No tech jargon.
-                - Talk like a knowledgeable friend, not a professor.
-                - Give specific, actionable steps they can try today.
-                - When mentioning apps or tools, explain exactly how to find and use them.
-                - Be encouraging. Many of your users are trying technology for the first time.
-                - Keep answers concise — 3-5 short paragraphs max.
-                - If something is risky or could lead to scams, warn them clearly.
-                - You represent 50+TechBridge, a program that helps adults 50+ learn AI for independent living.""",
-                messages=[
-                    {"role": m["role"], "content": m["content"]}
-                    for m in st.session_state.messages
-                ],
-            ) as stream:
-                reply = st.write_stream(stream.text_stream)
+                with client.messages.stream(
+                    model="claude-sonnet-4-6",
+                    max_tokens=1024,
+                    system="""You are Barb, a warm, patient AI guide who helps adults over 50
+                    learn how to use AI and technology for independent living.
 
-        st.session_state.messages.append({"role": "assistant", "content": reply})
+                    Rules:
+                    - Use simple, clear language. No tech jargon.
+                    - Talk like a knowledgeable friend, not a professor.
+                    - Give specific, actionable steps they can try today.
+                    - When mentioning apps or tools, explain exactly how to find and use them.
+                    - Be encouraging. Many of your users are trying technology for the first time.
+                    - Keep answers concise — 3-5 short paragraphs max.
+                    - If something is risky or could lead to scams, warn them clearly.
+                    - You represent 50+TechBridge, a program that helps adults 50+ learn AI for independent living.""",
+                    messages=[
+                        {"role": m["role"], "content": m["content"]}
+                        for m in st.session_state.messages
+                    ],
+                ) as stream:
+                    reply = st.write_stream(stream.text_stream)
+
+                st.session_state.messages.append({"role": "assistant", "content": reply})
+
+            except Exception as e:
+                st.error(f"Barb ran into a problem: {e}")
+                st.session_state.messages.pop()
+                st.session_state.questions_asked -= 1
 
         # Feedback buttons
         col1, col2, _ = st.columns([1, 1, 4])
