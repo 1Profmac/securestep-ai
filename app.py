@@ -112,18 +112,37 @@ p, li, label, span, div {
 }
 
 /* Chat input */
-.stChatInput textarea, .stChatInput input {
+.stChatInput, [data-testid="stChatInput"] {
+    background-color: #0E1C2F !important;
+}
+.stChatInput textarea, .stChatInput input,
+[data-testid="stChatInput"] textarea,
+[data-testid="stChatInput"] input,
+[data-testid="stChatInputTextArea"],
+[data-baseweb="textarea"] textarea {
     background-color: #162640 !important;
     color: #C4CDD9 !important;
     border: 1.5px solid #A8B8CC !important;
     border-radius: 8px !important;
     font-size: 18px !important;
     font-family: 'DM Sans', sans-serif !important;
+    caret-color: #C8942E !important;
 }
-.stChatInput textarea:focus, .stChatInput input:focus {
+.stChatInput textarea::placeholder,
+[data-testid="stChatInput"] textarea::placeholder,
+[data-testid="stChatInputTextArea"]::placeholder {
+    color: #A8B8CC !important;
+    opacity: 1 !important;
+}
+.stChatInput textarea:focus, .stChatInput input:focus,
+[data-testid="stChatInput"] textarea:focus {
     border-color: #C8942E !important;
     outline: none !important;
     box-shadow: 0 0 0 2px rgba(200, 148, 46, 0.3) !important;
+}
+/* Override Streamlit's white chat input container */
+[data-testid="stBottom"], [data-testid="stBottom"] > div {
+    background-color: #0E1C2F !important;
 }
 
 /* Select box */
