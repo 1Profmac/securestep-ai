@@ -565,10 +565,9 @@ elif page == "Ask Barb":
     st.markdown("<p style='color:#A8B8CC; font-size:16px; margin:12px 0 8px;'><strong style='color:#C4CDD9;'>Not sure what to ask? Try one of these:</strong></p>", unsafe_allow_html=True)
 
     for example in examples:
-        st.markdown('<div class="pill-btn">', unsafe_allow_html=True)
         if st.button(example, key=f"ex_{example}", use_container_width=True):
             st.session_state["user_input"] = example
-        st.markdown('</div>', unsafe_allow_html=True)
+            st.rerun()
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
@@ -587,11 +586,9 @@ elif page == "Ask Barb":
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Chat input
-    prompt = st.chat_input("Type your question here...")
-
-    if "user_input" in st.session_state:
-        prompt = st.session_state.pop("user_input")
+    # Pull from example button click or typed input
+    pending = st.session_state.pop("user_input", None)
+    prompt = pending or st.chat_input("Type your question here...")
 
     if prompt:
         st.session_state.messages.append({"role": "user", "content": prompt})
