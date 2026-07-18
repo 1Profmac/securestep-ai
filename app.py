@@ -399,6 +399,10 @@ CATEGORY_ICONS = {
     "Creative & Fun": "🎨",
 }
 
+# ── Handle nav_to (Home quick-start buttons) ─────────────────────────────────
+if "nav_to" in st.session_state:
+    st.session_state["nav_page"] = st.session_state.pop("nav_to")
+
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
     try:
@@ -449,10 +453,6 @@ with st.sidebar:
     if st.button("Clear Chat History", key="clear_chat"):
         st.session_state.messages = []
         st.rerun()
-
-# ── Handle nav_to (Home quick-start buttons) ─────────────────────────────────
-if "nav_to" in st.session_state:
-    st.session_state["nav_page"] = st.session_state.pop("nav_to")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # HOME PAGE
