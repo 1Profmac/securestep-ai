@@ -111,38 +111,39 @@ p, li, label, span, div {
     border-left: 4px solid #109F35 !important;
 }
 
-/* Chat input */
-.stChatInput, [data-testid="stChatInput"] {
+/* Chat input — target every possible selector */
+[data-testid="stBottom"],
+[data-testid="stBottom"] > div,
+[data-testid="stBottom"] > div > div,
+.stChatInput,
+[data-testid="stChatInput"] {
     background-color: #0E1C2F !important;
 }
-.stChatInput textarea, .stChatInput input,
-[data-testid="stChatInput"] textarea,
-[data-testid="stChatInput"] input,
+textarea,
 [data-testid="stChatInputTextArea"],
-[data-baseweb="textarea"] textarea {
+[data-baseweb="textarea"] textarea,
+.stChatInput textarea,
+[data-testid="stChatInput"] textarea {
     background-color: #162640 !important;
-    color: #C4CDD9 !important;
+    color: #ffffff !important;
     border: 1.5px solid #A8B8CC !important;
     border-radius: 8px !important;
     font-size: 18px !important;
     font-family: 'DM Sans', sans-serif !important;
     caret-color: #C8942E !important;
 }
-.stChatInput textarea::placeholder,
-[data-testid="stChatInput"] textarea::placeholder,
-[data-testid="stChatInputTextArea"]::placeholder {
+textarea::placeholder,
+[data-testid="stChatInputTextArea"]::placeholder,
+.stChatInput textarea::placeholder {
     color: #A8B8CC !important;
     opacity: 1 !important;
 }
-.stChatInput textarea:focus, .stChatInput input:focus,
+textarea:focus,
+.stChatInput textarea:focus,
 [data-testid="stChatInput"] textarea:focus {
     border-color: #C8942E !important;
     outline: none !important;
     box-shadow: 0 0 0 2px rgba(200, 148, 46, 0.3) !important;
-}
-/* Override Streamlit's white chat input container */
-[data-testid="stBottom"], [data-testid="stBottom"] > div {
-    background-color: #0E1C2F !important;
 }
 
 /* Select box */
