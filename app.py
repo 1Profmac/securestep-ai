@@ -1,5 +1,5 @@
 import streamlit as st
-import anthropic
+import google.generativeai as genai
 import os
 from datetime import datetime
 
@@ -172,13 +172,12 @@ elif page == "Ask Barb":
             st.markdown(prompt)
 
         with st.chat_message("assistant"):
-            api_key = os.environ.get("ANTHROPIC_API_KEY") or st.secrets.get("ANTHROPIC_API_KEY")
-            client = anthropic.Anthropic(api_key=api_key)
+            api_key = os.environ.get("GOOGLE_API_KEY") or st.secrets.get("GOOGLE_API_KEY")
+            genai.configure(api_key=api_key)
 
-            with client.messages.stream(
-                model="claude-sonnet-4-6",
-                max_tokens=1024,
-                system="""You are Barb, a warm, patient AI guide who helps adults over 50
+            model = genai.GenerativeModel(
+                model_name="gemini-2.0-flash",
+                system_instruction="""You are Barb, a warm, patient AI guide who helps adults over 50
                 learn how to use AI and technology for independent living.
 
                 Rules:
@@ -190,12 +189,20 @@ elif page == "Ask Barb":
                 - Keep answers concise — 3-5 short paragraphs max.
                 - If something is risky or could lead to scams, warn them clearly.
                 - You represent 50+TechBridge, a program that helps adults 50+ learn AI for independent living.""",
-                messages=[
-                    {"role": m["role"], "content": m["content"]}
-                    for m in st.session_state.messages
-                ],
-            ) as stream:
-                reply = st.write_stream(stream.text_stream)
+            )
+
+            history = [
+                {"role": "model" if m["role"] == "assistant" else "user", "parts": [m["content"]]}
+                for m in st.session_state.messages[:-1]
+            ]
+            chat = model.start_chat(history=history)
+            response = chat.send_message(prompt, stream=True)
+
+            def stream_gemini(r):
+                for chunk in r:
+                    yield chunk.text
+
+            reply = st.write_stream(stream_gemini(response))
 
         st.session_state.messages.append({"role": "assistant", "content": reply})
 
