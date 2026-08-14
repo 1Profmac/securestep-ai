@@ -1,6 +1,5 @@
 import streamlit as st
-from google import genai
-from google.genai import types
+import anthropic
 import os
 from datetime import datetime
 
@@ -608,40 +607,29 @@ elif page == "Ask Barb":
                     st.error("Barb is unavailable right now — API key not configured. Please contact support.")
                     st.stop()
 
-                client = genai.Client(api_key=api_key)
+                client = anthropic.Anthropic(api_key=api_key)
 
-                contents = []
-                for m in st.session_state.messages[:-1]:
-                    role = "model" if m["role"] == "assistant" else "user"
-                    contents.append(types.Content(role=role, parts=[types.Part(text=m["content"])]))
-                contents.append(types.Content(role="user", parts=[types.Part(text=prompt)]))
+                with client.messages.stream(
+                    model="claude-haiku-4-5-20251001",
+                    max_tokens=1024,
+                    system="""You are Barb, a warm, patient AI guide who helps adults over 50
+                    learn how to use AI and technology for independent living.
 
-                response = client.models.generate_content_stream(
-                    model="gemini-2.5-flash",
-                    contents=contents,
-                    config=types.GenerateContentConfig(
-                        system_instruction="""You are Barb, a warm, patient AI guide who helps adults over 50
-                        learn how to use AI and technology for independent living.
-
-                        Rules:
-                        - Use simple, clear language. No tech jargon.
-                        - Talk like a knowledgeable friend, not a professor.
-                        - Give specific, actionable steps they can try today.
-                        - When mentioning apps or tools, explain exactly how to find and use them.
-                        - Be encouraging. Many of your users are trying technology for the first time.
-                        - Keep answers concise — 3-5 short paragraphs max.
-                        - If something is risky or could lead to scams, warn them clearly.
-                        - You represent 50+TechBridge, a program that helps adults 50+ learn AI for independent living.""",
-                        max_output_tokens=1024,
-                    )
-                )
-
-                def stream_gemini(r):
-                    for chunk in r:
-                        if chunk.text:
-                            yield chunk.text
-
-                reply = st.write_stream(stream_gemini(response))
+                    Rules:
+                    - Use simple, clear language. No tech jargon.
+                    - Talk like a knowledgeable friend, not a professor.
+                    - Give specific, actionable steps they can try today.
+                    - When mentioning apps or tools, explain exactly how to find and use them.
+                    - Be encouraging. Many of your users are trying technology for the first time.
+                    - Keep answers concise — 3-5 short paragraphs max.
+                    - If something is risky or could lead to scams, warn them clearly.
+                    - You represent 50+TechBridge, a program that helps adults 50+ learn AI for independent living.""",
+                    messages=[
+                        {"role": m["role"], "content": m["content"]}
+                        for m in st.session_state.messages
+                    ],
+                ) as stream:
+                    reply = st.write_stream(stream.text_stream)
                 st.session_state.messages.append({"role": "assistant", "content": reply})
 
             except Exception as e:
