@@ -600,9 +600,9 @@ elif page == "Ask Barb":
 
         with st.chat_message("assistant"):
             try:
-                api_key = os.environ.get("GOOGLE_API_KEY")
+                api_key = os.environ.get("ANTHROPIC_API_KEY")
                 if not api_key:
-                    api_key = st.secrets.get("GOOGLE_API_KEY")
+                    api_key = st.secrets.get("ANTHROPIC_API_KEY")
                 if not api_key:
                     st.error("Barb is unavailable right now — API key not configured. Please contact support.")
                     st.stop()
