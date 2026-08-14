@@ -617,7 +617,7 @@ elif page == "Ask Barb":
                 contents.append(types.Content(role="user", parts=[types.Part(text=prompt)]))
 
                 response = client.models.generate_content_stream(
-                    model="gemini-2.0-flash",
+                    model="gemini-2.5-flash",
                     contents=contents,
                     config=types.GenerateContentConfig(
                         system_instruction="""You are Barb, a warm, patient AI guide who helps adults over 50
