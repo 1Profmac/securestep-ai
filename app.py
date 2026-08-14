@@ -609,7 +609,7 @@ elif page == "Ask Barb":
 
                 genai.configure(api_key=api_key)
                 model = genai.GenerativeModel(
-                    model_name="gemini-2.0-flash-lite",
+                    model_name="gemini-1.5-flash",
                     system_instruction="""You are Barb, a warm, patient AI guide who helps adults over 50
                     learn how to use AI and technology for independent living.
 
