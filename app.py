@@ -1,5 +1,6 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import os
 from datetime import datetime
 
@@ -607,33 +608,38 @@ elif page == "Ask Barb":
                     st.error("Barb is unavailable right now — API key not configured. Please contact support.")
                     st.stop()
 
-                genai.configure(api_key=api_key)
-                model = genai.GenerativeModel(
-                    model_name="gemini-1.5-flash",
-                    system_instruction="""You are Barb, a warm, patient AI guide who helps adults over 50
-                    learn how to use AI and technology for independent living.
+                client = genai.Client(api_key=api_key)
 
-                    Rules:
-                    - Use simple, clear language. No tech jargon.
-                    - Talk like a knowledgeable friend, not a professor.
-                    - Give specific, actionable steps they can try today.
-                    - When mentioning apps or tools, explain exactly how to find and use them.
-                    - Be encouraging. Many of your users are trying technology for the first time.
-                    - Keep answers concise — 3-5 short paragraphs max.
-                    - If something is risky or could lead to scams, warn them clearly.
-                    - You represent 50+TechBridge, a program that helps adults 50+ learn AI for independent living.""",
+                contents = []
+                for m in st.session_state.messages[:-1]:
+                    role = "model" if m["role"] == "assistant" else "user"
+                    contents.append(types.Content(role=role, parts=[types.Part(text=m["content"])]))
+                contents.append(types.Content(role="user", parts=[types.Part(text=prompt)]))
+
+                response = client.models.generate_content_stream(
+                    model="gemini-2.0-flash",
+                    contents=contents,
+                    config=types.GenerateContentConfig(
+                        system_instruction="""You are Barb, a warm, patient AI guide who helps adults over 50
+                        learn how to use AI and technology for independent living.
+
+                        Rules:
+                        - Use simple, clear language. No tech jargon.
+                        - Talk like a knowledgeable friend, not a professor.
+                        - Give specific, actionable steps they can try today.
+                        - When mentioning apps or tools, explain exactly how to find and use them.
+                        - Be encouraging. Many of your users are trying technology for the first time.
+                        - Keep answers concise — 3-5 short paragraphs max.
+                        - If something is risky or could lead to scams, warn them clearly.
+                        - You represent 50+TechBridge, a program that helps adults 50+ learn AI for independent living.""",
+                        max_output_tokens=1024,
+                    )
                 )
-
-                history = [
-                    {"role": "model" if m["role"] == "assistant" else "user", "parts": [m["content"]]}
-                    for m in st.session_state.messages[:-1]
-                ]
-                chat = model.start_chat(history=history)
-                response = chat.send_message(prompt, stream=True)
 
                 def stream_gemini(r):
                     for chunk in r:
-                        yield chunk.text
+                        if chunk.text:
+                            yield chunk.text
 
                 reply = st.write_stream(stream_gemini(response))
                 st.session_state.messages.append({"role": "assistant", "content": reply})
