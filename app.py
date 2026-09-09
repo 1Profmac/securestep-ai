@@ -1,6 +1,9 @@
 import streamlit as st
 import anthropic
 import os
+import re
+import urllib.request
+import json
 from datetime import datetime
 
 try:
@@ -318,6 +321,25 @@ section[data-testid="stSidebar"] label {
     font-size: 15px;
     margin-top: 4px;
 }
+
+/* Mobile — single column layout */
+@media (max-width: 640px) {
+    [data-testid="column"] {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+    }
+    .block-container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+    h1, .stMarkdown h1 {
+        font-size: 2rem !important;
+    }
+    .stButton > button {
+        font-size: 16px !important;
+    }
+}
 .lmt-hero-sub {
     color: #A8B8CC;
     font-size: 20px;
@@ -463,6 +485,36 @@ if "ai_provider" not in st.session_state:
     st.session_state.ai_provider = default_provider
 if st.session_state.ai_provider not in available_providers and available_providers:
     st.session_state.ai_provider = default_provider
+if "email_captured" not in st.session_state:
+    st.session_state.email_captured = False
+
+
+def subscribe_mailerlite(email):
+    """Add email to MailerLite list. Returns (success, message)."""
+    api_key = get_setting("MAILERLITE_API_KEY", "")
+    group_id = get_setting("MAILERLITE_GROUP_ID", "")
+    if not api_key:
+        return False, "no_key"
+    try:
+        payload = json.dumps({"email": email, "groups": [group_id] if group_id else []}).encode()
+        req = urllib.request.Request(
+            "https://connect.mailerlite.com/api/subscribers",
+            data=payload,
+            headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": f"Bearer {api_key}",
+            },
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            return resp.status in (200, 201), "ok"
+    except Exception:
+        return False, "error"
+
+
+def is_valid_email(email):
+    return bool(re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email.strip()))
 
 
 def iter_openai_text(stream):
@@ -507,13 +559,36 @@ def stream_assistant_reply(provider, messages):
 
 # ── Daily tips ───────────────────────────────────────────────────────────────
 daily_tips = [
-    "You can ask Alexa or Siri to set medication reminders — just say 'Remind me to take my pills at 8am every day.'",
-    "AI can help you write emails. Just tell ChatGPT or Claude 'Help me write a friendly email to my doctor about my upcoming appointment.'",
-    "Worried about phone scams? AI can't answer your phone, but you can ask it 'What are the most common phone scams targeting adults 50+?' to learn what to watch for.",
-    "You can use AI to compare Medicare plans. Ask: 'What questions should I ask when choosing a Medicare supplement plan?'",
+    "Ask Alexa or Siri to set medication reminders — just say 'Remind me to take my pills at 8am every day.'",
+    "AI can help you write emails. Tell ChatGPT: 'Help me write a friendly email to my doctor about my upcoming appointment.'",
+    "Worried about phone scams? Ask AI: 'What are the most common phone scams targeting adults 50+?' to learn what to watch for.",
+    "Use AI to compare Medicare plans. Ask: 'What questions should I ask when choosing a Medicare supplement plan?'",
     "Want to video call family? FaceTime (iPhone) or Google Meet (any phone) are the easiest options. Ask Barb how to set them up!",
     "AI can help you organize recipes. Take a photo of a recipe card and ask AI to type it up and adjust the serving size.",
     "Feeling isolated? Ask Barb about AI tools that help you stay connected with family and find local community events.",
+    "You can make your phone text bigger in Settings → Display → Text Size. Slide it up and everything becomes easier to read.",
+    "Ask AI to help you write a letter to a grandchild. Just say: 'Help me write a warm letter to my 10-year-old granddaughter.'",
+    "Scammers often pretend to be the IRS or Social Security. The government will never call and demand immediate payment by gift card.",
+    "Your phone's camera can read QR codes automatically — just point it at the code and tap the link that appears.",
+    "Ask AI: 'Explain my Medicare Explanation of Benefits in plain English' — then paste in the confusing text.",
+    "Google Maps can give you turn-by-turn directions spoken out loud. Ask Barb how to set it up on your phone.",
+    "AI can help you write thank-you notes. Just say: 'Help me write a thank-you note for a birthday gift from my neighbor.'",
+    "You can use your phone's voice assistant to set a timer without touching the screen — just say 'Set a timer for 20 minutes.'",
+    "If you get a suspicious email asking for personal info, don't click anything. Forward it to your email provider as spam.",
+    "Ask AI to summarize a long article for you. Copy the text and say: 'Summarize this in 3 simple sentences.'",
+    "Your phone has a built-in flashlight. Swipe down from the top of your screen and tap the flashlight icon.",
+    "AI can help you prepare for a doctor's visit. Ask: 'What questions should I ask my doctor about [your condition]?'",
+    "Want to video chat with grandkids? Zoom is free and works on any phone, tablet, or computer. Ask Barb for setup steps.",
+    "Worried about online shopping safety? Look for 'https' and a padlock icon in the browser before entering payment info.",
+    "AI can help you write a complaint letter that actually gets results. Just describe the problem and ask it to help you write clearly.",
+    "You can use your phone to check if a charity is legitimate before donating — ask AI: 'Is [charity name] a reputable organization?'",
+    "Ask AI to help you understand a legal document. Say: 'Explain this contract clause in plain English' and paste the text.",
+    "Your phone can read text aloud to you. On iPhone go to Settings → Accessibility → Spoken Content → Speak Screen.",
+    "Grocery delivery apps like Instacart or HEB let you order from your couch and have food brought to your door.",
+    "AI can help you find local resources. Ask: 'What senior services are available in [your city]?'",
+    "You can share your location with a family member so they know you're safe — without calling every day. Ask Barb how.",
+    "Ask AI: 'Write a simple daily routine that helps me stay active and healthy at home.' Then personalize what it gives you.",
+    "Telehealth lets you see a doctor by video from home. Ask Barb: 'How do I set up a telehealth appointment with my doctor?'",
 ]
 today_tip = daily_tips[datetime.now().timetuple().tm_yday % len(daily_tips)]
 
@@ -723,6 +798,39 @@ if page == "Home":
             st.session_state["nav_to"] = "My Progress"
             st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
+
+    # ── Email capture ─────────────────────────────────────────────────────────
+    if not st.session_state.email_captured:
+        st.markdown("""
+        <div style="background-color:#1E3A5F; border-radius:12px; padding:20px 24px; margin-bottom:8px;">
+            <div style="font-family:'Playfair Display',serif; font-size:1.2rem; color:#C8942E;
+                        font-weight:700; margin-bottom:6px;">Get free AI tips in your inbox</div>
+            <div style="color:#C4CDD9; font-size:16px; margin-bottom:14px;">
+                Join 50+TechBridge — free weekly tips to help you use AI for independent living.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        email_input = st.text_input("Your email address", placeholder="name@example.com", key="email_signup")
+        if st.button("Send Me Free Tips →", use_container_width=True, key="email_btn"):
+            if not email_input or not is_valid_email(email_input):
+                st.error("Please enter a valid email address.")
+            else:
+                success, result = subscribe_mailerlite(email_input.strip())
+                if success or result == "no_key":
+                    st.session_state.email_captured = True
+                    st.success("You're in! Check your inbox for a welcome message from 50+TechBridge.")
+                    st.rerun()
+                else:
+                    st.error("Something went wrong. Please try again or email brian@learnmoretechnologies.com")
+    else:
+        st.markdown("""
+        <div style="background-color:#162640; border-left:4px solid #109F35; border-radius:10px;
+                    padding:14px 20px; margin-bottom:8px; color:#C4CDD9; font-size:16px;">
+            ✅ You're subscribed to free AI tips from 50+TechBridge!
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
