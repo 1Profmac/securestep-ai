@@ -715,6 +715,37 @@ if page == "Home":
     <h2 style="font-family:'Playfair Display',serif; font-size:1.3rem; color:#C8942E; margin-bottom:8px;">
         What Can Barb Help With?
     </h2>
+    <p style="color:#A8B8CC; font-size:15px; margin-bottom:12px;">Start with our free lessons — then ask Barb anything.</p>
+    """, unsafe_allow_html=True)
+
+    # Free lesson cards first
+    _COURSE_BASE = "https://50plustechbridge.com/courses/50techbridge/lessons"
+    st.markdown(f"""
+    <div style="margin-bottom:8px;">
+        <a href="{_COURSE_BASE}/welcome/" target="_blank" style="text-decoration:none;">
+            <div class="lmt-cat-card" style="border-left:3px solid #C8942E;">
+                <div class="cat-title">📱 Lesson 1 — Your Phone is More Powerful Than You Think</div>
+                <div class="cat-example">Make text bigger, bolder, and easier to read in 5 minutes.</div>
+            </div>
+        </a>
+    </div>
+    <div style="margin-bottom:8px;">
+        <a href="{_COURSE_BASE}/talk-to-ai/" target="_blank" style="text-decoration:none;">
+            <div class="lmt-cat-card" style="border-left:3px solid #C8942E;">
+                <div class="cat-title">🤖 Lesson 2 — Talk to AI</div>
+                <div class="cat-example">Set reminders with your voice, ask AI questions, get real help.</div>
+            </div>
+        </a>
+    </div>
+    <div style="margin-bottom:16px;">
+        <a href="{_COURSE_BASE}/dont-get-scammed/" target="_blank" style="text-decoration:none;">
+            <div class="lmt-cat-card" style="border-left:3px solid #C8942E;">
+                <div class="cat-title">🛡️ Lesson 3 — Don't Get Scammed</div>
+                <div class="cat-example">Spot scams before they get you — protect your money and information.</div>
+            </div>
+        </a>
+    </div>
+    <p style="color:#A8B8CC; font-size:15px; margin:12px 0 8px;">Or ask Barb about any of these topics:</p>
     """, unsafe_allow_html=True)
 
     col_a, col_b = st.columns(2)
