@@ -3,6 +3,11 @@ import anthropic
 import os
 from datetime import datetime
 
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
+
 # Page setup
 st.set_page_config(page_title="Ask Barb by SecureStep.ai", page_icon="🌟", layout="centered")
 
@@ -350,12 +355,132 @@ section[data-testid="stSidebar"] label {
 """, unsafe_allow_html=True)
 
 # ── Session state ────────────────────────────────────────────────────────────
+def get_setting(name, default=""):
+    val = os.environ.get(name)
+    if val not in (None, ""):
+        return str(val)
+    try:
+        secret = st.secrets[name]
+        if secret not in (None, ""):
+            return str(secret)
+    except Exception:
+        pass
+    return default
+
+
+def is_truthy(val):
+    return val is True or str(val).strip().lower() in ("1", "true", "yes", "on")
+
+
+BARB_SYSTEM_PROMPT = """You are Barb, a warm, patient AI guide who helps adults over 50
+learn how to use AI and technology for independent living.
+
+Rules:
+- Use simple, clear language. No tech jargon.
+- Talk like a knowledgeable friend, not a professor.
+- Give specific, actionable steps they can try today.
+- When mentioning apps or tools, explain exactly how to find and use them.
+- Be encouraging. Many of your users are trying technology for the first time.
+- Keep answers concise — 3-5 short paragraphs max.
+- If something is risky or could lead to scams, warn them clearly.
+- You represent 50+TechBridge, a program that helps adults 50+ learn AI for independent living."""
+
+CHATGPT_CLASS_PROMPT = """You are Barb, a warm classroom tutor helping adults over 50
+practice using ChatGPT. This is a free class tutorial. Answers come from ChatGPT —
+the same kind of AI students can use later at chatgpt.com.
+
+Rules:
+- Use simple, clear language. No tech jargon.
+- Talk like a knowledgeable friend, not a professor.
+- Give specific, actionable steps they can try today.
+- When it helps them learn, briefly say how they could ask the same thing in ChatGPT at home.
+- Be encouraging. Many of your users are trying technology for the first time.
+- Keep answers concise — 3-5 short paragraphs max.
+- If something is risky or could lead to scams, warn them clearly.
+- You represent Ask Barb by SecureStep.ai, helping adults 50+ learn AI in class and at home."""
+
+PROVIDER_LABELS = {
+    "openai": "Practice with ChatGPT (class tutorial)",
+    "anthropic": "Ask Barb",
+}
+
+
+def has_api_key(name):
+    return bool(get_setting(name, "").strip())
+
+
+CLASSROOM_MODE = is_truthy(get_setting("CLASSROOM_MODE", "false"))
+HAS_OPENAI = has_api_key("OPENAI_API_KEY")
+HAS_ANTHROPIC = has_api_key("ANTHROPIC_API_KEY")
+
+available_providers = []
+if HAS_OPENAI:
+    available_providers.append("openai")
+if HAS_ANTHROPIC:
+    available_providers.append("anthropic")
+if CLASSROOM_MODE:
+    available_providers = [p for p in ("openai", "anthropic") if p in available_providers]
+
+default_provider = get_setting("DEFAULT_PROVIDER", "").strip().lower()
+if default_provider not in available_providers:
+    if CLASSROOM_MODE and "openai" in available_providers:
+        default_provider = "openai"
+    elif available_providers:
+        default_provider = available_providers[0]
+    else:
+        default_provider = "openai" if CLASSROOM_MODE else "anthropic"
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "questions_asked" not in st.session_state:
     st.session_state.questions_asked = 0
 if "helpful_count" not in st.session_state:
     st.session_state.helpful_count = 0
+if "ai_provider" not in st.session_state:
+    st.session_state.ai_provider = default_provider
+if st.session_state.ai_provider not in available_providers and available_providers:
+    st.session_state.ai_provider = default_provider
+
+
+def iter_openai_text(stream):
+    for chunk in stream:
+        if not chunk.choices:
+            continue
+        text = chunk.choices[0].delta.content
+        if text:
+            yield text
+
+
+def stream_assistant_reply(provider, messages):
+    chat_messages = [{"role": m["role"], "content": m["content"]} for m in messages]
+    if provider == "openai":
+        api_key = get_setting("OPENAI_API_KEY")
+        if not api_key:
+            raise RuntimeError("missing_openai_key")
+        if OpenAI is None:
+            raise RuntimeError("missing_openai_package")
+        model = get_setting("OPENAI_MODEL", "gpt-4o-mini")
+        client = OpenAI(api_key=api_key)
+        stream = client.chat.completions.create(
+            model=model,
+            max_tokens=1024,
+            stream=True,
+            messages=[{"role": "system", "content": CHATGPT_CLASS_PROMPT}] + chat_messages,
+        )
+        return st.write_stream(iter_openai_text(stream))
+
+    api_key = get_setting("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise RuntimeError("missing_anthropic_key")
+    model = get_setting("ANTHROPIC_MODEL", "claude-haiku-4-5-20251001")
+    client = anthropic.Anthropic(api_key=api_key)
+    with client.messages.stream(
+        model=model,
+        max_tokens=1024,
+        system=BARB_SYSTEM_PROMPT,
+        messages=chat_messages,
+    ) as stream:
+        return st.write_stream(stream.text_stream)
 
 # ── Daily tips ───────────────────────────────────────────────────────────────
 daily_tips = [
@@ -468,6 +593,17 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
+    provider = st.session_state.get("ai_provider", default_provider)
+    if provider == "openai":
+        answering = "ChatGPT class tutorial"
+    else:
+        answering = "Ask Barb"
+    st.markdown(f"""
+    <div style="text-align:center; margin:4px 0 10px; font-size:14px; color:#A8B8CC;">
+        Answering with: <span style="color:#C8942E; font-weight:700;">{answering}</span>
+    </div>
+    """, unsafe_allow_html=True)
+
     st.markdown("<hr style='border-color:#1E3A5F; margin:12px 0;'>", unsafe_allow_html=True)
 
     if st.button("Clear Chat History", key="clear_chat"):
@@ -490,6 +626,15 @@ if page == "Home":
             Hi, I'm Barb.
         </h1>
         <p class="lmt-hero-sub">Your AI guide for independent living.</p>
+        """, unsafe_allow_html=True)
+
+    if CLASSROOM_MODE or st.session_state.get("ai_provider") == "openai":
+        st.markdown("""
+        <div class="lmt-tip-card">
+            <strong style="color:#C8942E;">Class tutorial:</strong>
+            You can practice with ChatGPT here — the same kind of AI you can use later at chatgpt.com.
+            Pick <em>Practice with ChatGPT</em> on the Ask Barb page. You can switch to Ask Barb anytime for the full guide.
+        </div>
         """, unsafe_allow_html=True)
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
@@ -546,12 +691,41 @@ if page == "Home":
 # ASK BARB PAGE
 # ══════════════════════════════════════════════════════════════════════════════
 elif page == "Ask Barb":
-    st.markdown("""
+    if "_chat_provider" not in st.session_state:
+        st.session_state._chat_provider = st.session_state.ai_provider
+    if st.session_state.ai_provider != st.session_state._chat_provider:
+        st.session_state.messages = []
+        st.session_state._chat_provider = st.session_state.ai_provider
+
+    using_chatgpt = st.session_state.ai_provider == "openai"
+    heading = "Class tutorial" if using_chatgpt else "Ask Barb"
+    subheading = (
+        "Practice with ChatGPT — the same kind of AI you can use at home."
+        if using_chatgpt
+        else "No tech jargon. Just plain talk from a knowledgeable friend."
+    )
+    st.markdown(f"""
     <h1 style="font-family:'Playfair Display',serif; font-size:2.4rem; color:#C8942E; margin-bottom:4px;">
-        Ask Barb
+        {heading}
     </h1>
-    <p style="color:#A8B8CC; font-size:18px; margin-bottom:0;">No tech jargon. Just plain talk from a knowledgeable friend.</p>
+    <p style="color:#A8B8CC; font-size:18px; margin-bottom:0;">{subheading}</p>
     """, unsafe_allow_html=True)
+
+    if CLASSROOM_MODE and not HAS_OPENAI:
+        st.warning("This class tutorial needs an OPENAI_API_KEY in Streamlit secrets.")
+
+    if len(available_providers) > 1:
+        st.radio(
+            "Who should answer?",
+            available_providers,
+            format_func=lambda p: PROVIDER_LABELS.get(p, p),
+            key="ai_provider",
+        )
+    elif not available_providers:
+        st.error(
+            "No AI key is set. Add OPENAI_API_KEY for class ChatGPT practice "
+            "and/or ANTHROPIC_API_KEY for Ask Barb."
+        )
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
@@ -574,13 +748,23 @@ elif page == "Ask Barb":
 
     # Barb greeting
     if not st.session_state.messages:
-        st.markdown("""
+        if st.session_state.get("ai_provider") == "openai":
+            greeting = """
+        <div class="lmt-barb-greeting">
+            Hi — I'm Barb, and today we're practicing with ChatGPT. Type a question just like you would
+            at chatgpt.com. I'll keep the language simple, and I'll show you how to try the same thing at home.
+            <strong style="color:#C8942E;">What would you like to try?</strong>
+        </div>
+            """
+        else:
+            greeting = """
         <div class="lmt-barb-greeting">
             Hi there! I'm Barb, your AI guide. I'm here to help you learn how AI can make your daily life easier and safer.
             Ask me anything — no question is too simple, and I'll never use confusing tech talk.
             <strong style="color:#C8942E;">What would you like to know?</strong>
         </div>
-        """, unsafe_allow_html=True)
+            """
+        st.markdown(greeting, unsafe_allow_html=True)
 
     # Chat history
     for message in st.session_state.messages:
@@ -600,40 +784,25 @@ elif page == "Ask Barb":
 
         with st.chat_message("assistant"):
             try:
-                api_key = os.environ.get("ANTHROPIC_API_KEY")
-                if not api_key:
-                    api_key = st.secrets.get("ANTHROPIC_API_KEY")
-                if not api_key:
-                    st.error("Barb is unavailable right now — API key not configured. Please contact support.")
-                    st.stop()
-
-                client = anthropic.Anthropic(api_key=api_key)
-
-                with client.messages.stream(
-                    model="claude-haiku-4-5-20251001",
-                    max_tokens=1024,
-                    system="""You are Barb, a warm, patient AI guide who helps adults over 50
-                    learn how to use AI and technology for independent living.
-
-                    Rules:
-                    - Use simple, clear language. No tech jargon.
-                    - Talk like a knowledgeable friend, not a professor.
-                    - Give specific, actionable steps they can try today.
-                    - When mentioning apps or tools, explain exactly how to find and use them.
-                    - Be encouraging. Many of your users are trying technology for the first time.
-                    - Keep answers concise — 3-5 short paragraphs max.
-                    - If something is risky or could lead to scams, warn them clearly.
-                    - You represent 50+TechBridge, a program that helps adults 50+ learn AI for independent living.""",
-                    messages=[
-                        {"role": m["role"], "content": m["content"]}
-                        for m in st.session_state.messages
-                    ],
-                ) as stream:
-                    reply = st.write_stream(stream.text_stream)
+                provider = st.session_state.get("ai_provider", default_provider)
+                reply = stream_assistant_reply(provider, st.session_state.messages)
                 st.session_state.messages.append({"role": "assistant", "content": reply})
 
-            except Exception as e:
-                st.error(f"Barb ran into a problem: {e}")
+            except RuntimeError as err:
+                code = str(err)
+                if code == "missing_openai_key":
+                    st.error("ChatGPT practice is unavailable — the class API key is not set. Please tell your instructor.")
+                elif code == "missing_openai_package":
+                    st.error("ChatGPT practice needs the OpenAI package installed. Please tell your instructor.")
+                elif code == "missing_anthropic_key":
+                    st.error("Barb is unavailable right now — API key not configured. Please contact support.")
+                else:
+                    st.error("Something went wrong answering that question. Please try again.")
+                st.session_state.messages.pop()
+                st.session_state.questions_asked -= 1
+
+            except Exception:
+                st.error("Something went wrong answering that question. Please try again.")
                 st.session_state.messages.pop()
                 st.session_state.questions_asked -= 1
 
