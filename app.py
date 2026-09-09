@@ -1015,7 +1015,7 @@ elif page == "Resources":
             <li>
                 <strong>Lesson 1: Your Phone is More Powerful Than You Think</strong><br>
                 <span style="color:#A8B8CC; font-size:15px;">Phone settings, text size, accessibility — 5 minutes.</span><br>
-                <a href="https://50plustechbridge.com/courses/50techbridge/lessons/welcome/" target="_blank">Take Lesson 1 →</a>
+                <a href="https://50plustechbridge.com/courses/50techbridge/lessons/lessons-welcome/" target="_blank">Take Lesson 1 →</a>
             </li>
             <li style="margin-top:12px;">
                 <strong>Lesson 2: Talk to AI</strong><br>
