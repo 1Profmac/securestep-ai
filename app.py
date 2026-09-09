@@ -174,6 +174,20 @@ textarea:focus,
 .stRadio [data-testid="stMarkdownContainer"] p {
     color: #C4CDD9 !important;
 }
+/* Nav radio dots — all gold */
+.stRadio [data-testid="stWidgetLabel"] + div label span:first-child,
+[data-baseweb="radio"] div[role="radio"] div {
+    background-color: #C8942E !important;
+    border-color: #C8942E !important;
+}
+[data-baseweb="radio"] [data-checked="true"] div,
+[data-baseweb="radio"] div[role="radio"][aria-checked="true"] div {
+    background-color: #C8942E !important;
+    border-color: #C8942E !important;
+}
+[data-baseweb="radio"] div[role="radio"] {
+    border-color: #C8942E !important;
+}
 
 /* Metrics */
 [data-testid="stMetric"] {
@@ -203,6 +217,9 @@ section[data-testid="stSidebar"] .stImage img {
     border: 3px solid #C8942E !important;
     display: block;
     margin: 0 auto;
+    width: 100px !important;
+    height: 100px !important;
+    object-fit: cover !important;
 }
 
 /* Sidebar text */
