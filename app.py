@@ -174,19 +174,17 @@ textarea:focus,
 .stRadio [data-testid="stMarkdownContainer"] p {
     color: #C4CDD9 !important;
 }
-/* Nav radio dots — all gold */
-.stRadio [data-testid="stWidgetLabel"] + div label span:first-child,
-[data-baseweb="radio"] div[role="radio"] div {
-    background-color: #C8942E !important;
-    border-color: #C8942E !important;
-}
-[data-baseweb="radio"] [data-checked="true"] div,
-[data-baseweb="radio"] div[role="radio"][aria-checked="true"] div {
-    background-color: #C8942E !important;
-    border-color: #C8942E !important;
-}
+/* Nav radio dots — gold border on all, filled on selected */
 [data-baseweb="radio"] div[role="radio"] {
     border-color: #C8942E !important;
+    background-color: transparent !important;
+}
+[data-baseweb="radio"] div[role="radio"][aria-checked="true"] {
+    border-color: #C8942E !important;
+    background-color: #C8942E !important;
+}
+[data-baseweb="radio"] div[role="radio"] div {
+    background-color: #C8942E !important;
 }
 
 /* Metrics */
