@@ -375,6 +375,14 @@ def is_truthy(val):
 BARB_SYSTEM_PROMPT = """You are Barb, a warm, patient AI guide who helps adults over 50
 learn how to use AI and technology for independent living.
 
+You are part of the free 50+TechBridge course on learnmoretechnologies.com, which has three lessons:
+- Lesson 1 "Your Phone is More Powerful Than You Think" — phone settings, text size, accessibility basics
+- Lesson 2 "Talk to AI" — using AI assistants, voice reminders, asking AI questions
+- Lesson 3 "Don't Get Scammed" — online safety, spotting scams, protecting personal information
+
+When a question relates to one of these lessons, briefly mention that the free lesson covers it in more detail.
+Do NOT paste URLs — the app will show lesson buttons automatically.
+
 Rules:
 - Use simple, clear language. No tech jargon.
 - Talk like a knowledgeable friend, not a professor.
@@ -542,6 +550,41 @@ CATEGORY_ICONS = {
     "Staying Connected": "📱",
     "Home & Safety": "🏠",
     "Creative & Fun": "🎨",
+}
+
+# ── LearnDash lesson links by category ───────────────────────────────────────
+_COURSE_BASE = "https://50plustechbridge.com/courses/50techbridge/lessons"
+LESSON_SUGGESTIONS = {
+    "Health & Medications": {
+        "title": "Lesson 2: Talk to AI",
+        "desc": "Learn to use AI to set reminders, ask health questions, and get information fast.",
+        "url": f"{_COURSE_BASE}/talk-to-ai/",
+    },
+    "Money & Bills": {
+        "title": "Lesson 3: Don't Get Scammed",
+        "desc": "Protect your money — learn to spot scams before they get you.",
+        "url": f"{_COURSE_BASE}/dont-get-scammed/",
+    },
+    "Staying Connected": {
+        "title": "Lesson 2: Talk to AI",
+        "desc": "Use AI and your phone to stay connected with the people who matter.",
+        "url": f"{_COURSE_BASE}/talk-to-ai/",
+    },
+    "Home & Safety": {
+        "title": "Lesson 3: Don't Get Scammed",
+        "desc": "Stay safe at home and online — know the warning signs.",
+        "url": f"{_COURSE_BASE}/dont-get-scammed/",
+    },
+    "Creative & Fun": {
+        "title": "Lesson 1: Your Phone is More Powerful Than You Think",
+        "desc": "Unlock what your phone can really do — photos, stories, and more.",
+        "url": f"{_COURSE_BASE}/welcome/",
+    },
+    "All Topics": {
+        "title": "Start the Free Course",
+        "desc": "Three free lessons. No tech background needed. Start today.",
+        "url": "https://learnmoretechnologies.com/courses/50techbridge",
+    },
 }
 
 # ── Handle nav_to (Home quick-start buttons) ─────────────────────────────────
@@ -820,6 +863,24 @@ elif page == "Ask Barb":
                 st.toast("Thanks — I'll try to do better!")
             st.markdown('</div>', unsafe_allow_html=True)
 
+        # LearnDash lesson suggestion
+        lesson = LESSON_SUGGESTIONS.get(selected_cat, LESSON_SUGGESTIONS["All Topics"])
+        st.markdown(f"""
+        <div style="margin-top:20px; background-color:#1E3A5F; border-left:4px solid #C8942E;
+                    border-radius:10px; padding:16px 20px;">
+            <div style="font-size:13px; color:#A8B8CC; text-transform:uppercase;
+                        letter-spacing:0.5px; margin-bottom:6px;">Want to go deeper?</div>
+            <div style="font-family:'Playfair Display',serif; font-size:18px;
+                        color:#C8942E; font-weight:700; margin-bottom:4px;">{lesson['title']}</div>
+            <div style="color:#C4CDD9; font-size:16px; margin-bottom:12px;">{lesson['desc']}</div>
+            <a href="{lesson['url']}" target="_blank"
+               style="display:inline-block; background:#C8942E; color:#0E1C2F; font-weight:700;
+                      font-size:16px; padding:10px 20px; border-radius:8px; text-decoration:none;">
+                Take the Free Lesson →
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
+
 # ══════════════════════════════════════════════════════════════════════════════
 # MY PROGRESS PAGE
 # ══════════════════════════════════════════════════════════════════════════════
@@ -903,10 +964,23 @@ elif page == "Resources":
 
     st.markdown("""
     <div class="lmt-section-card">
-        <h3>50+TechBridge</h3>
+        <h3>📚 Free 50+TechBridge Lessons</h3>
         <ul>
-            <li>Website: <a href="https://50plustechbridge.com" target="_blank">50plustechbridge.com</a></li>
-            <li>Courses: <a href="https://learnmoretechnologies.com" target="_blank">learnmoretechnologies.com</a></li>
+            <li>
+                <strong>Lesson 1: Your Phone is More Powerful Than You Think</strong><br>
+                <span style="color:#A8B8CC; font-size:15px;">Phone settings, text size, accessibility — 5 minutes.</span><br>
+                <a href="https://50plustechbridge.com/courses/50techbridge/lessons/welcome/" target="_blank">Take Lesson 1 →</a>
+            </li>
+            <li style="margin-top:12px;">
+                <strong>Lesson 2: Talk to AI</strong><br>
+                <span style="color:#A8B8CC; font-size:15px;">Use voice reminders, ask AI questions, get real help.</span><br>
+                <a href="https://50plustechbridge.com/courses/50techbridge/lessons/talk-to-ai/" target="_blank">Take Lesson 2 →</a>
+            </li>
+            <li style="margin-top:12px;">
+                <strong>Lesson 3: Don't Get Scammed</strong><br>
+                <span style="color:#A8B8CC; font-size:15px;">Spot scams, protect your money, stay safe online.</span><br>
+                <a href="https://50plustechbridge.com/courses/50techbridge/lessons/dont-get-scammed/" target="_blank">Take Lesson 3 →</a>
+            </li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
