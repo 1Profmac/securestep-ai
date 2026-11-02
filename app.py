@@ -12,7 +12,7 @@ except ImportError:
     OpenAI = None
 
 # Page setup
-st.set_page_config(page_title="Ask Barb by SecureStep.ai", page_icon="🌟", layout="centered")
+st.set_page_config(page_title="Ask Barb", page_icon="🌟", layout="centered")
 
 # ── Global CSS ──────────────────────────────────────────────────────────────
 st.markdown("""
@@ -442,7 +442,7 @@ Rules:
 - Be encouraging. Many of your users are trying technology for the first time.
 - Keep answers concise — 3-5 short paragraphs max.
 - If something is risky or could lead to scams, warn them clearly.
-- You represent Ask Barb by SecureStep.ai, helping adults 50+ learn AI in class and at home."""
+- You represent Ask Barb by 50+TechBridge, helping adults 50+ learn AI in class and at home."""
 
 PROVIDER_LABELS = {
     "openai": "Practice with ChatGPT (class tutorial)",
@@ -559,7 +559,6 @@ def stream_assistant_reply(provider, messages):
 
 # ── Daily tips ───────────────────────────────────────────────────────────────
 daily_tips = [
-    "Ask Alexa or Siri to set medication reminders — just say 'Remind me to take my pills at 8am every day.'",
     "AI can help you write emails. Tell ChatGPT: 'Help me write a friendly email to my doctor about my upcoming appointment.'",
     "Worried about phone scams? Ask AI: 'What are the most common phone scams targeting adults 50+?' to learn what to watch for.",
     "Use AI to compare Medicare plans. Ask: 'What questions should I ask when choosing a Medicare supplement plan?'",
@@ -607,11 +606,6 @@ def get_pioneer_level(questions):
 
 # ── Categories ───────────────────────────────────────────────────────────────
 categories = {
-    "Health & Medications": [
-        "How can AI help me remember my medications?",
-        "Can AI help me prepare for a doctor's appointment?",
-        "What apps track blood pressure or blood sugar?",
-    ],
     "Money & Bills": [
         "Can AI help me manage my bills and budget?",
         "How do I spot an online scam?",
@@ -625,7 +619,7 @@ categories = {
     "Home & Safety": [
         "What AI tools can help me stay safe living alone?",
         "How do smart home devices work?",
-        "Can AI detect if I've fallen?",
+        "How do I spot a scam text or phone call?",
     ],
     "Creative & Fun": [
         "Can AI help me write my life story?",
@@ -635,7 +629,6 @@ categories = {
 }
 
 CATEGORY_ICONS = {
-    "Health & Medications": "💊",
     "Money & Bills": "💰",
     "Staying Connected": "📱",
     "Home & Safety": "🏠",
@@ -645,11 +638,6 @@ CATEGORY_ICONS = {
 # ── LearnDash lesson links by category ───────────────────────────────────────
 _COURSE_BASE = "https://50plustechbridge.com/courses/50techbridge/lessons"
 LESSON_SUGGESTIONS = {
-    "Health & Medications": {
-        "title": "Lesson 2: Talk to AI",
-        "desc": "Learn to use AI to set reminders, ask health questions, and get information fast.",
-        "url": f"{_COURSE_BASE}/talk-to-ai/",
-    },
     "Money & Bills": {
         "title": "Lesson 3: Don't Get Scammed",
         "desc": "Protect your money — learn to spot scams before they get you.",
@@ -696,7 +684,7 @@ with st.sidebar:
     st.markdown("""
     <div style="margin-top: 4px; margin-bottom: 2px;">
         <span style="font-family:'Playfair Display',serif; font-size:26px; font-weight:800; color:#C8942E;">Ask Barb</span><br>
-        <span style="font-family:'DM Sans',sans-serif; font-size:14px; color:#A8B8CC; letter-spacing:0.5px;">by SecureStep.ai</span>
+        <span style="font-family:'DM Sans',sans-serif; font-size:14px; color:#A8B8CC; letter-spacing:0.5px;">by 50+TechBridge</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -711,12 +699,9 @@ with st.sidebar:
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:12px 0;'>", unsafe_allow_html=True)
 
-    level, level_msg = get_pioneer_level(st.session_state.questions_asked)
     st.markdown(f"""
-    <div class="lmt-level-badge">
-        <div style="font-size:13px; color:#A8B8CC; margin-bottom:4px;">Pioneer Level</div>
-        <strong style="font-size:20px;">{level}</strong><br>
-        <div style="font-size:14px; color:#A8B8CC; margin-top:4px;">{level_msg}</div>
+    <div style="font-size:13px; color:#A8B8CC; margin-top:8px;">
+        Questions asked this session: <span style="color:#C8942E; font-weight:700;">{st.session_state.questions_asked}</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -1047,16 +1032,6 @@ elif page == "My Progress":
     """, unsafe_allow_html=True)
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
-
-    level, level_msg = get_pioneer_level(st.session_state.questions_asked)
-
-    st.markdown(f"""
-    <div class="lmt-progress-card">
-        <div style="font-size:14px; color:#A8B8CC; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">Your Pioneer Level</div>
-        <h2>{level}</h2>
-        <p>{level_msg}</p>
-    </div>
-    """, unsafe_allow_html=True)
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
