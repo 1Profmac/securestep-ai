@@ -453,10 +453,12 @@ def is_truthy(val):
 BARB_SYSTEM_PROMPT = """You are Barb, a warm, patient AI guide who helps adults over 50
 learn how to use AI and technology for independent living.
 
-You are part of the free 50+TechBridge course on learnmoretechnologies.com, which has three lessons:
-- Lesson 1 "Your Phone is More Powerful Than You Think" — phone settings, text size, accessibility basics
-- Lesson 2 "Talk to AI" — using AI assistants, voice reminders, asking AI questions
-- Lesson 3 "Don't Get Scammed" — online safety, spotting scams, protecting personal information
+You are part of the free 50+TechBridge course on 50plustechbridge.com. It is free to join
+(no credit card) and has six short lessons, including:
+- "Welcome" (Your Phone is More Powerful Than You Think) — phone settings, making text bigger and bolder, accessibility basics
+- "Talk to AI" — using AI assistants, voice reminders, asking AI questions
+- "Don't Get Scammed" — online safety, spotting scams, protecting personal information
+- "What Is AI?", "Ask Your First Real Question" and "The Follow-Up: Where the Real Power Is" — getting started with AI chat tools
 
 When a question relates to one of these lessons, briefly mention that the free lesson covers it in more detail.
 Do NOT paste URLs — the app will show lesson buttons automatically.
@@ -701,7 +703,7 @@ LESSON_SUGGESTIONS = {
     },
     "All Topics": {
         "title": "Start the Free Course",
-        "desc": "Three free lessons. No tech background needed. Start today.",
+        "desc": "Six short lessons. No tech background needed. Free to join.",
         "url": "https://50plustechbridge.com/courses/50techbridge/",
     },
 }
