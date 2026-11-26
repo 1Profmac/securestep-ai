@@ -697,12 +697,12 @@ LESSON_SUGGESTIONS = {
     "Creative & Fun": {
         "title": "Lesson 1: Your Phone is More Powerful Than You Think",
         "desc": "Unlock what your phone can really do — photos, stories, and more.",
-        "url": f"{_COURSE_BASE}/welcome/",
+        "url": f"{_COURSE_BASE}/lessons-welcome/",
     },
     "All Topics": {
         "title": "Start the Free Course",
         "desc": "Three free lessons. No tech background needed. Start today.",
-        "url": "https://learnmoretechnologies.com/courses/50techbridge",
+        "url": "https://50plustechbridge.com/courses/50techbridge/",
     },
 }
 
@@ -910,7 +910,7 @@ if page == "Home":
     _COURSE_BASE = "https://50plustechbridge.com/courses/50techbridge/lessons"
     st.markdown(f"""
     <div style="margin-bottom:8px;">
-        <a href="{_COURSE_BASE}/welcome/" target="_blank" style="text-decoration:none;">
+        <a href="{_COURSE_BASE}/lessons-welcome/" target="_blank" style="text-decoration:none;">
             <div class="lmt-cat-card" style="border-left:3px solid #C8942E;">
                 <div class="cat-title">📱 Lesson 1 — Your Phone is More Powerful Than You Think</div>
                 <div class="cat-example">Make text bigger, bolder, and easier to read in 5 minutes.</div>
