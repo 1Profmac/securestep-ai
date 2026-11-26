@@ -25,7 +25,7 @@ html, body, [class*="css"], .stApp {
     background-color: #0E1C2F !important;
     color: #C4CDD9 !important;
     font-family: 'DM Sans', sans-serif !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
 }
 
 /* Remove Streamlit white containers */
@@ -57,7 +57,7 @@ p, li, label, span, div {
     color: #0E1C2F !important;
     font-family: 'DM Sans', sans-serif !important;
     font-weight: 700 !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
     border-radius: 8px !important;
     border: none !important;
     padding: 12px 24px !important;
@@ -69,6 +69,41 @@ p, li, label, span, div {
 .stButton > button:hover {
     background-color: #E8B84B !important;
     color: #0E1C2F !important;
+}
+/* Dark text on gold buttons (the global "p" color rule made it light gray,
+   which is hard to read on gold) */
+.stButton > button p,
+.stButton > button span,
+.stButton > button div,
+section[data-testid="stSidebar"] .stButton > button p,
+section[data-testid="stSidebar"] .stButton > button span,
+section[data-testid="stSidebar"] .stButton > button div {
+    color: #0E1C2F !important;
+    font-size: inherit !important;
+    font-weight: 700 !important;
+}
+
+/* Round Barb photo beside the Home page heading */
+.lmt-hero {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 4px;
+}
+.lmt-hero img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 3px solid #C8942E;
+    flex-shrink: 0;
+}
+.lmt-hero h1 {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+@media (max-width: 640px) {
+    .lmt-hero img { width: 90px; height: 90px; }
 }
 
 /* Outline buttons — pill buttons for example questions */
@@ -97,15 +132,21 @@ p, li, label, span, div {
     color: #0E1C2F !important;
 }
 
+/* Keep Streamlit's built-in icons on their icon font (the global DM Sans rule
+   above would otherwise turn them into words like "face" or "smart_toy") */
+[data-testid="stIconMaterial"] {
+    font-family: 'Material Symbols Rounded' !important;
+}
+
 /* Chat messages */
 .stChatMessage {
-    font-size: 18px !important;
+    font-size: 20px !important;
     border-radius: 10px !important;
     padding: 12px !important;
     margin-bottom: 10px !important;
 }
 [data-testid="stChatMessageContent"] {
-    font-size: 18px !important;
+    font-size: 20px !important;
     color: #C4CDD9 !important;
 }
 /* User bubble */
@@ -136,7 +177,7 @@ textarea,
     color: #ffffff !important;
     border: 1.5px solid #A8B8CC !important;
     border-radius: 8px !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
     font-family: 'DM Sans', sans-serif !important;
     caret-color: #C8942E !important;
 }
@@ -160,7 +201,7 @@ textarea:focus,
     color: #C4CDD9 !important;
     border: 1.5px solid #A8B8CC !important;
     border-radius: 8px !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
 }
 .stSelectbox > div > div:focus-within {
     border-color: #C8942E !important;
@@ -172,7 +213,7 @@ textarea:focus,
 }
 .stRadio label {
     color: #C4CDD9 !important;
-    font-size: 17px !important;
+    font-size: 20px !important;
 }
 .stRadio [data-testid="stMarkdownContainer"] p {
     color: #C4CDD9 !important;
@@ -204,7 +245,7 @@ textarea:focus,
 }
 [data-testid="stMetricLabel"] {
     color: #A8B8CC !important;
-    font-size: 16px !important;
+    font-size: 20px !important;
 }
 
 /* Divider */
@@ -242,7 +283,7 @@ section[data-testid="stSidebar"] label {
     border-radius: 10px;
     padding: 20px 24px;
     margin: 12px 0;
-    font-size: 18px;
+    font-size: 20px;
     color: #C4CDD9;
     font-family: 'DM Sans', sans-serif;
 }
@@ -263,7 +304,7 @@ section[data-testid="stSidebar"] label {
 .lmt-progress-card p {
     color: #A8B8CC;
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
 }
 .lmt-level-badge {
     background-color: #1E3A5F;
@@ -313,12 +354,12 @@ section[data-testid="stSidebar"] label {
 .lmt-cat-card .cat-title {
     color: #C8942E;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 20px;
     font-family: 'DM Sans', sans-serif;
 }
 .lmt-cat-card .cat-example {
     color: #A8B8CC;
-    font-size: 15px;
+    font-size: 18px;
     margin-top: 4px;
 }
 
@@ -337,12 +378,12 @@ section[data-testid="stSidebar"] label {
         font-size: 2rem !important;
     }
     .stButton > button {
-        font-size: 16px !important;
+        font-size: 20px !important;
     }
 }
 .lmt-hero-sub {
     color: #A8B8CC;
-    font-size: 20px;
+    font-size: 22px;
     font-family: 'DM Sans', sans-serif;
     margin-bottom: 8px;
 }
@@ -352,7 +393,7 @@ section[data-testid="stSidebar"] label {
     border-radius: 8px;
     padding: 16px 20px;
     color: #E8B84B;
-    font-size: 18px;
+    font-size: 20px;
     font-family: 'DM Sans', sans-serif;
     margin: 12px 0;
 }
@@ -362,7 +403,7 @@ section[data-testid="stSidebar"] label {
     border-radius: 10px;
     padding: 20px 24px;
     margin: 12px 0;
-    font-size: 18px;
+    font-size: 20px;
     color: #C4CDD9;
     font-family: 'DM Sans', sans-serif;
 }
@@ -370,7 +411,7 @@ section[data-testid="stSidebar"] label {
     width: 100%;
     border-collapse: collapse;
     font-family: 'DM Sans', sans-serif;
-    font-size: 17px;
+    font-size: 20px;
 }
 .lmt-table th {
     background-color: #1E3A5F;
@@ -669,6 +710,54 @@ LESSON_SUGGESTIONS = {
 if "nav_to" in st.session_state:
     st.session_state["nav_page"] = st.session_state.pop("nav_to")
 
+def render_questions_counter():
+    """Draw (or redraw) the sidebar question counter in its placeholder."""
+    count = st.session_state.questions_asked
+    questions_counter_slot.markdown(f"""
+    <div style="font-size:17px; color:#A8B8CC; margin-top:8px;">
+        Questions asked this session: <span style="color:#C8942E; font-weight:700;">{count}</span>
+    </div>
+    <div style="text-align:center; margin:10px 0; font-size:20px; color:#A8B8CC;">
+        Questions Asked: <span style="color:#C8942E; font-weight:700;">{count}</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+# Small, square avatars for the chat (the full-size photo is 7 MB)
+CHAT_AVATARS = {"assistant": "barb-avatar-small.png", "user": "🙂"}
+
+
+def _image_data_uri(path):
+    """Inline a small image so it can sit inside HTML (e.g. the round hero photo)."""
+    import base64
+    try:
+        with open(path, "rb") as fh:
+            return "data:image/png;base64," + base64.b64encode(fh.read()).decode()
+    except Exception:
+        return ""
+
+
+BARB_AVATAR_DATA_URI = _image_data_uri("barb-avatar-small.png")
+
+
+def render_course_box(lesson):
+    """The "Want to go deeper?" free-course box."""
+    st.markdown(f"""
+    <div style="margin-top:20px; background-color:#1E3A5F; border-left:4px solid #C8942E;
+                border-radius:10px; padding:18px 22px;">
+        <div style="font-size:18px; color:#A8B8CC; text-transform:uppercase;
+                    letter-spacing:0.5px; margin-bottom:6px;">Want to go deeper?</div>
+        <div style="font-family:'Playfair Display',serif; font-size:24px;
+                    color:#C8942E; font-weight:700; margin-bottom:6px;">{lesson['title']}</div>
+        <div style="color:#C4CDD9; font-size:20px; margin-bottom:14px;">{lesson['desc']}</div>
+        <a href="{lesson['url']}" target="_blank"
+           style="display:inline-block; background:#C8942E; color:#0E1C2F; font-weight:700;
+                  font-size:20px; padding:12px 24px; border-radius:8px; text-decoration:none;">
+            Take the Free Lesson →
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
     try:
@@ -677,14 +766,14 @@ with st.sidebar:
         pass
 
     try:
-        st.image("barb-avatar.png", width=100)
+        st.image("barb-avatar-small.png", width=100)
     except Exception:
         pass
 
     st.markdown("""
     <div style="margin-top: 4px; margin-bottom: 2px;">
-        <span style="font-family:'Playfair Display',serif; font-size:26px; font-weight:800; color:#C8942E;">Ask Barb</span><br>
-        <span style="font-family:'DM Sans',sans-serif; font-size:14px; color:#A8B8CC; letter-spacing:0.5px;">by 50+TechBridge</span>
+        <span style="font-family:'Playfair Display',serif; font-size:30px; font-weight:800; color:#C8942E;">Ask Barb</span><br>
+        <span style="font-family:'DM Sans',sans-serif; font-size:18px; color:#A8B8CC; letter-spacing:0.5px;">by 50+TechBridge</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -699,17 +788,10 @@ with st.sidebar:
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:12px 0;'>", unsafe_allow_html=True)
 
-    st.markdown(f"""
-    <div style="font-size:13px; color:#A8B8CC; margin-top:8px;">
-        Questions asked this session: <span style="color:#C8942E; font-weight:700;">{st.session_state.questions_asked}</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown(f"""
-    <div style="text-align:center; margin:10px 0; font-size:16px; color:#A8B8CC;">
-        Questions Asked: <span style="color:#C8942E; font-weight:700;">{st.session_state.questions_asked}</span>
-    </div>
-    """, unsafe_allow_html=True)
+    # A placeholder, so the count can be refreshed after a question is answered
+    # (the sidebar is drawn before the chat runs further down the page).
+    questions_counter_slot = st.empty()
+    render_questions_counter()
 
     provider = st.session_state.get("ai_provider", default_provider)
     if provider == "openai":
@@ -717,7 +799,7 @@ with st.sidebar:
     else:
         answering = "Ask Barb"
     st.markdown(f"""
-    <div style="text-align:center; margin:4px 0 10px; font-size:14px; color:#A8B8CC;">
+    <div style="text-align:center; margin:4px 0 10px; font-size:18px; color:#A8B8CC;">
         Answering with: <span style="color:#C8942E; font-weight:700;">{answering}</span>
     </div>
     """, unsafe_allow_html=True)
@@ -732,19 +814,17 @@ with st.sidebar:
 # HOME PAGE
 # ══════════════════════════════════════════════════════════════════════════════
 if page == "Home":
-    hero_col1, hero_col2 = st.columns([1, 3])
-    with hero_col1:
-        try:
-            st.image("barb-avatar.png", use_container_width=True)
-        except Exception:
-            pass
-    with hero_col2:
-        st.markdown("""
-        <h1 style="font-family:'Playfair Display',serif; font-size:3rem; color:#C8942E; margin-bottom:4px;">
-            Hi, I'm Barb.
-        </h1>
-        <p class="lmt-hero-sub">Your AI guide for independent living.</p>
-        """, unsafe_allow_html=True)
+    st.markdown(f"""
+    <div class="lmt-hero">
+        <img src="{BARB_AVATAR_DATA_URI}" alt="Barb, your AI guide">
+        <div>
+            <h1 style="font-family:'Playfair Display',serif; font-size:3rem; color:#C8942E;">
+                Hi, I'm Barb.
+            </h1>
+            <p class="lmt-hero-sub" style="margin:6px 0 0;">Your AI guide for independent living.</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     if CLASSROOM_MODE or st.session_state.get("ai_provider") == "openai":
         st.markdown("""
@@ -758,7 +838,7 @@ if page == "Home":
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
     st.markdown("""
-    <h2 style="font-family:'Playfair Display',serif; font-size:1.3rem; color:#C8942E; margin-bottom:8px;">
+    <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#C8942E; margin-bottom:8px;">
         Today's AI Tip
     </h2>
     """, unsafe_allow_html=True)
@@ -767,7 +847,7 @@ if page == "Home":
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
     st.markdown("""
-    <h2 style="font-family:'Playfair Display',serif; font-size:1.3rem; color:#C8942E; margin-bottom:8px;">
+    <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#C8942E; margin-bottom:8px;">
         Quick Start
     </h2>
     """, unsafe_allow_html=True)
@@ -778,11 +858,11 @@ if page == "Home":
             st.session_state["nav_to"] = "Ask Barb"
             st.rerun()
     with col2:
-        st.markdown('<div class="outline-btn">', unsafe_allow_html=True)
+        # (No wrapper markdown here: it added an empty block above the button
+        # and pushed it lower than "Ask Barb a Question".)
         if st.button("See My Progress", use_container_width=True, key="home_progress"):
             st.session_state["nav_to"] = "My Progress"
             st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
@@ -790,9 +870,9 @@ if page == "Home":
     if not st.session_state.email_captured:
         st.markdown("""
         <div style="background-color:#1E3A5F; border-radius:12px; padding:20px 24px; margin-bottom:8px;">
-            <div style="font-family:'Playfair Display',serif; font-size:1.2rem; color:#C8942E;
+            <div style="font-family:'Playfair Display',serif; font-size:1.5rem; color:#C8942E;
                         font-weight:700; margin-bottom:6px;">Get free AI tips in your inbox</div>
-            <div style="color:#C4CDD9; font-size:16px; margin-bottom:14px;">
+            <div style="color:#C4CDD9; font-size:20px; margin-bottom:14px;">
                 Join 50+TechBridge — free weekly tips to help you use AI for independent living.
             </div>
         </div>
@@ -812,7 +892,7 @@ if page == "Home":
     else:
         st.markdown("""
         <div style="background-color:#162640; border-left:4px solid #109F35; border-radius:10px;
-                    padding:14px 20px; margin-bottom:8px; color:#C4CDD9; font-size:16px;">
+                    padding:14px 20px; margin-bottom:8px; color:#C4CDD9; font-size:20px;">
             ✅ You're subscribed to free AI tips from 50+TechBridge!
         </div>
         """, unsafe_allow_html=True)
@@ -820,10 +900,10 @@ if page == "Home":
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
     st.markdown("""
-    <h2 style="font-family:'Playfair Display',serif; font-size:1.3rem; color:#C8942E; margin-bottom:8px;">
+    <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#C8942E; margin-bottom:8px;">
         What Can Barb Help With?
     </h2>
-    <p style="color:#A8B8CC; font-size:15px; margin-bottom:12px;">Start with our free lessons — then ask Barb anything.</p>
+    <p style="color:#A8B8CC; font-size:18px; margin-bottom:12px;">Start with our free lessons — then ask Barb anything.</p>
     """, unsafe_allow_html=True)
 
     # Free lesson cards first
@@ -853,7 +933,7 @@ if page == "Home":
             </div>
         </a>
     </div>
-    <p style="color:#A8B8CC; font-size:15px; margin:12px 0 8px;">Or ask Barb about any of these topics:</p>
+    <p style="color:#A8B8CC; font-size:18px; margin:12px 0 8px;">Or ask Barb about any of these topics:</p>
     """, unsafe_allow_html=True)
 
     col_a, col_b = st.columns(2)
@@ -868,6 +948,9 @@ if page == "Home":
                 <div class="cat-example">{questions[0]}</div>
             </div>
             """, unsafe_allow_html=True)
+
+    # "Want to go deeper? Start the Free Course" at the bottom of Home
+    render_course_box(LESSON_SUGGESTIONS["All Topics"])
 
 # ══════════════════════════════════════════════════════════════════════════════
 # ASK BARB PAGE
@@ -890,7 +973,7 @@ elif page == "Ask Barb":
     <h1 style="font-family:'Playfair Display',serif; font-size:2.4rem; color:#C8942E; margin-bottom:4px;">
         {heading}
     </h1>
-    <p style="color:#A8B8CC; font-size:18px; margin-bottom:0;">{subheading}</p>
+    <p style="color:#A8B8CC; font-size:20px; margin-bottom:0;">{subheading}</p>
     """, unsafe_allow_html=True)
 
     if CLASSROOM_MODE and not HAS_OPENAI:
@@ -919,7 +1002,7 @@ elif page == "Ask Barb":
     else:
         examples = categories[selected_cat]
 
-    st.markdown("<p style='color:#A8B8CC; font-size:16px; margin:12px 0 8px;'><strong style='color:#C4CDD9;'>Not sure what to ask? Try one of these:</strong></p>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#A8B8CC; font-size:20px; margin:12px 0 8px;'><strong style='color:#C4CDD9;'>Not sure what to ask? Try one of these:</strong></p>", unsafe_allow_html=True)
 
     for example in examples:
         if st.button(example, key=f"ex_{example}", use_container_width=True):
@@ -950,7 +1033,7 @@ elif page == "Ask Barb":
 
     # Chat history
     for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
+        with st.chat_message(message["role"], avatar=CHAT_AVATARS.get(message["role"])):
             st.markdown(message["content"])
 
     # Pull from example button click or typed input
@@ -960,11 +1043,12 @@ elif page == "Ask Barb":
     if prompt:
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.session_state.questions_asked += 1
+        render_questions_counter()
 
-        with st.chat_message("user"):
+        with st.chat_message("user", avatar=CHAT_AVATARS["user"]):
             st.markdown(prompt)
 
-        with st.chat_message("assistant"):
+        with st.chat_message("assistant", avatar=CHAT_AVATARS["assistant"]):
             try:
                 provider = st.session_state.get("ai_provider", default_provider)
                 reply = stream_assistant_reply(provider, st.session_state.messages)
@@ -982,14 +1066,16 @@ elif page == "Ask Barb":
                     st.error("Something went wrong answering that question. Please try again.")
                 st.session_state.messages.pop()
                 st.session_state.questions_asked -= 1
+                render_questions_counter()
 
             except Exception:
                 st.error("Something went wrong answering that question. Please try again.")
                 st.session_state.messages.pop()
                 st.session_state.questions_asked -= 1
+                render_questions_counter()
 
-        # Feedback buttons
-        col1, col2, _ = st.columns([1, 1, 4])
+        # Feedback buttons (columns wide enough for the full labels at 20px)
+        col1, col2, _ = st.columns([3, 4, 5])
         with col1:
             st.markdown('<div class="pill-btn">', unsafe_allow_html=True)
             if st.button("👍 Helpful", key=f"helpful_{len(st.session_state.messages)}"):
@@ -1002,23 +1088,11 @@ elif page == "Ask Barb":
                 st.toast("Thanks — I'll try to do better!")
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # LearnDash lesson suggestion
+    # LearnDash lesson suggestion: stays at the bottom of the page once Barb
+    # has answered (it used to vanish on the next click, e.g. "Helpful").
+    if any(m["role"] == "assistant" for m in st.session_state.messages):
         lesson = LESSON_SUGGESTIONS.get(selected_cat, LESSON_SUGGESTIONS["All Topics"])
-        st.markdown(f"""
-        <div style="margin-top:20px; background-color:#1E3A5F; border-left:4px solid #C8942E;
-                    border-radius:10px; padding:16px 20px;">
-            <div style="font-size:13px; color:#A8B8CC; text-transform:uppercase;
-                        letter-spacing:0.5px; margin-bottom:6px;">Want to go deeper?</div>
-            <div style="font-family:'Playfair Display',serif; font-size:18px;
-                        color:#C8942E; font-weight:700; margin-bottom:4px;">{lesson['title']}</div>
-            <div style="color:#C4CDD9; font-size:16px; margin-bottom:12px;">{lesson['desc']}</div>
-            <a href="{lesson['url']}" target="_blank"
-               style="display:inline-block; background:#C8942E; color:#0E1C2F; font-weight:700;
-                      font-size:16px; padding:10px 20px; border-radius:8px; text-decoration:none;">
-                Take the Free Lesson →
-            </a>
-        </div>
-        """, unsafe_allow_html=True)
+        render_course_box(lesson)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MY PROGRESS PAGE
@@ -1028,7 +1102,7 @@ elif page == "My Progress":
     <h1 style="font-family:'Playfair Display',serif; font-size:2.4rem; color:#C8942E; margin-bottom:4px;">
         My Progress
     </h1>
-    <p style="color:#A8B8CC; font-size:18px; margin-bottom:0;">Track your Pioneer journey.</p>
+    <p style="color:#A8B8CC; font-size:20px; margin-bottom:0;">Track your Pioneer journey.</p>
     """, unsafe_allow_html=True)
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
@@ -1036,7 +1110,7 @@ elif page == "My Progress":
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
     st.markdown("""
-    <h2 style="font-family:'Playfair Display',serif; font-size:1.3rem; color:#C8942E; margin-bottom:8px;">
+    <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#C8942E; margin-bottom:8px;">
         Your Stats
     </h2>
     """, unsafe_allow_html=True)
@@ -1052,7 +1126,7 @@ elif page == "My Progress":
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
     st.markdown("""
-    <h2 style="font-family:'Playfair Display',serif; font-size:1.3rem; color:#C8942E; margin-bottom:8px;">
+    <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:#C8942E; margin-bottom:8px;">
         Pioneer Levels
     </h2>
     <table class="lmt-table">
@@ -1086,7 +1160,7 @@ elif page == "Resources":
     <h1 style="font-family:'Playfair Display',serif; font-size:2.4rem; color:#C8942E; margin-bottom:4px;">
         Resources
     </h1>
-    <p style="color:#A8B8CC; font-size:18px; margin-bottom:0;">Helpful links and local support for your AI learning journey.</p>
+    <p style="color:#A8B8CC; font-size:20px; margin-bottom:0;">Helpful links and local support for your AI learning journey.</p>
     """, unsafe_allow_html=True)
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
@@ -1097,17 +1171,17 @@ elif page == "Resources":
         <ul>
             <li>
                 <strong>Lesson 1: Your Phone is More Powerful Than You Think</strong><br>
-                <span style="color:#A8B8CC; font-size:15px;">Phone settings, text size, accessibility — 5 minutes.</span><br>
+                <span style="color:#A8B8CC; font-size:18px;">Phone settings, text size, accessibility — 5 minutes.</span><br>
                 <a href="https://50plustechbridge.com/courses/50techbridge/lessons/lessons-welcome/" target="_blank">Take Lesson 1 →</a>
             </li>
             <li style="margin-top:12px;">
                 <strong>Lesson 2: Talk to AI</strong><br>
-                <span style="color:#A8B8CC; font-size:15px;">Use voice reminders, ask AI questions, get real help.</span><br>
+                <span style="color:#A8B8CC; font-size:18px;">Use voice reminders, ask AI questions, get real help.</span><br>
                 <a href="https://50plustechbridge.com/courses/50techbridge/lessons/talk-to-ai/" target="_blank">Take Lesson 2 →</a>
             </li>
             <li style="margin-top:12px;">
                 <strong>Lesson 3: Don't Get Scammed</strong><br>
-                <span style="color:#A8B8CC; font-size:15px;">Spot scams, protect your money, stay safe online.</span><br>
+                <span style="color:#A8B8CC; font-size:18px;">Spot scams, protect your money, stay safe online.</span><br>
                 <a href="https://50plustechbridge.com/courses/50techbridge/lessons/dont-get-scammed/" target="_blank">Take Lesson 3 →</a>
             </li>
         </ul>
