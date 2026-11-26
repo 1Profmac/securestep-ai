@@ -97,6 +97,12 @@ p, li, label, span, div {
     color: #0E1C2F !important;
 }
 
+/* Keep Streamlit's built-in icons on their icon font (the global DM Sans rule
+   above would otherwise turn them into words like "face" or "smart_toy") */
+[data-testid="stIconMaterial"] {
+    font-family: 'Material Symbols Rounded' !important;
+}
+
 /* Chat messages */
 .stChatMessage {
     font-size: 18px !important;
@@ -669,6 +675,22 @@ LESSON_SUGGESTIONS = {
 if "nav_to" in st.session_state:
     st.session_state["nav_page"] = st.session_state.pop("nav_to")
 
+def render_questions_counter():
+    """Draw (or redraw) the sidebar question counter in its placeholder."""
+    count = st.session_state.questions_asked
+    questions_counter_slot.markdown(f"""
+    <div style="font-size:13px; color:#A8B8CC; margin-top:8px;">
+        Questions asked this session: <span style="color:#C8942E; font-weight:700;">{count}</span>
+    </div>
+    <div style="text-align:center; margin:10px 0; font-size:16px; color:#A8B8CC;">
+        Questions Asked: <span style="color:#C8942E; font-weight:700;">{count}</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+# Small, square avatars for the chat (the full-size photo is 7 MB)
+CHAT_AVATARS = {"assistant": "barb-avatar-small.png", "user": "🙂"}
+
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
     try:
@@ -677,7 +699,7 @@ with st.sidebar:
         pass
 
     try:
-        st.image("barb-avatar.png", width=100)
+        st.image("barb-avatar-small.png", width=100)
     except Exception:
         pass
 
@@ -699,17 +721,10 @@ with st.sidebar:
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:12px 0;'>", unsafe_allow_html=True)
 
-    st.markdown(f"""
-    <div style="font-size:13px; color:#A8B8CC; margin-top:8px;">
-        Questions asked this session: <span style="color:#C8942E; font-weight:700;">{st.session_state.questions_asked}</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown(f"""
-    <div style="text-align:center; margin:10px 0; font-size:16px; color:#A8B8CC;">
-        Questions Asked: <span style="color:#C8942E; font-weight:700;">{st.session_state.questions_asked}</span>
-    </div>
-    """, unsafe_allow_html=True)
+    # A placeholder, so the count can be refreshed after a question is answered
+    # (the sidebar is drawn before the chat runs further down the page).
+    questions_counter_slot = st.empty()
+    render_questions_counter()
 
     provider = st.session_state.get("ai_provider", default_provider)
     if provider == "openai":
@@ -950,7 +965,7 @@ elif page == "Ask Barb":
 
     # Chat history
     for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
+        with st.chat_message(message["role"], avatar=CHAT_AVATARS.get(message["role"])):
             st.markdown(message["content"])
 
     # Pull from example button click or typed input
@@ -960,11 +975,12 @@ elif page == "Ask Barb":
     if prompt:
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.session_state.questions_asked += 1
+        render_questions_counter()
 
-        with st.chat_message("user"):
+        with st.chat_message("user", avatar=CHAT_AVATARS["user"]):
             st.markdown(prompt)
 
-        with st.chat_message("assistant"):
+        with st.chat_message("assistant", avatar=CHAT_AVATARS["assistant"]):
             try:
                 provider = st.session_state.get("ai_provider", default_provider)
                 reply = stream_assistant_reply(provider, st.session_state.messages)
@@ -982,14 +998,16 @@ elif page == "Ask Barb":
                     st.error("Something went wrong answering that question. Please try again.")
                 st.session_state.messages.pop()
                 st.session_state.questions_asked -= 1
+                render_questions_counter()
 
             except Exception:
                 st.error("Something went wrong answering that question. Please try again.")
                 st.session_state.messages.pop()
                 st.session_state.questions_asked -= 1
+                render_questions_counter()
 
-        # Feedback buttons
-        col1, col2, _ = st.columns([1, 1, 4])
+        # Feedback buttons (columns wide enough for the full labels at 18px)
+        col1, col2, _ = st.columns([3, 4, 5])
         with col1:
             st.markdown('<div class="pill-btn">', unsafe_allow_html=True)
             if st.button("👍 Helpful", key=f"helpful_{len(st.session_state.messages)}"):
