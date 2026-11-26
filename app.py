@@ -453,10 +453,14 @@ def is_truthy(val):
 BARB_SYSTEM_PROMPT = """You are Barb, a warm, patient AI guide who helps adults over 50
 learn how to use AI and technology for independent living.
 
-You are part of the free 50+TechBridge course on learnmoretechnologies.com, which has three lessons:
-- Lesson 1 "Your Phone is More Powerful Than You Think" — phone settings, text size, accessibility basics
-- Lesson 2 "Talk to AI" — using AI assistants, voice reminders, asking AI questions
-- Lesson 3 "Don't Get Scammed" — online safety, spotting scams, protecting personal information
+You are part of the free 50+TechBridge course on 50plustechbridge.com. It is free to join
+(no credit card) and has six short lessons, in this order:
+- Lesson 1 "Welcome" — make the words on your phone bigger and bolder, pick your one goal, meet Prof. McKinney
+- Lesson 2 "Don't Get Scammed" — the 5 warning signs of a scam, 3 rules that keep you safe, who to call if something goes wrong
+- Lesson 3 "What Is AI?" — what AI is in plain words, opening ChatGPT for free with no account
+- Lesson 4 "Talk to AI" — asking ChatGPT a real question, using your voice, asking for a simpler answer
+- Lesson 5 "Ask Your First Real Question" — the starter prompt that always works, when to check with a real professional
+- Lesson 6 "The Follow-Up: Where the Real Power Is" — why the second question matters, follow-up phrases, saving a useful answer
 
 When a question relates to one of these lessons, briefly mention that the free lesson covers it in more detail.
 Do NOT paste URLs — the app will show lesson buttons automatically.
@@ -678,31 +682,45 @@ CATEGORY_ICONS = {
 
 # ── LearnDash lesson links by category ───────────────────────────────────────
 _COURSE_BASE = "https://50plustechbridge.com/courses/50techbridge/lessons"
+COURSE_URL = "https://50plustechbridge.com/courses/50techbridge/"
+
+# The six lessons, in the same order and wording as the live course page.
+COURSE_LESSONS = [
+    {"num": 1, "icon": "👋", "title": "Welcome", "minutes": 3,
+     "desc": "Make the words on your phone bigger and bolder, pick the one goal that matters most to you, and meet your guide, Prof. McKinney.",
+     "url": f"{_COURSE_BASE}/lessons-welcome/"},
+    {"num": 2, "icon": "🛡️", "title": "Don't Get Scammed", "minutes": 12,
+     "desc": "Know the 5 warning signs of a scam, use 3 rules that keep you safe, and know who to call if something goes wrong.",
+     "url": f"{_COURSE_BASE}/dont-get-scammed/"},
+    {"num": 3, "icon": "💡", "title": "What Is AI?", "minutes": 5,
+     "desc": "What AI really is, in plain words. Open ChatGPT for free, with no account, and say hello to AI for the first time.",
+     "url": f"{_COURSE_BASE}/what-is-ai-2/"},
+    {"num": 4, "icon": "🗣️", "title": "Talk to AI", "minutes": 15,
+     "desc": "Ask ChatGPT a real question, use your voice instead of typing, and ask for a simpler answer any time.",
+     "url": f"{_COURSE_BASE}/talk-to-ai/"},
+    {"num": 5, "icon": "❓", "title": "Ask Your First Real Question", "minutes": 5,
+     "desc": "Learn the starter prompt that always works, ask about something that matters to you, and know when to check with a real professional.",
+     "url": f"{_COURSE_BASE}/ask-your-first-real-question-2/"},
+    {"num": 6, "icon": "🔁", "title": "The Follow-Up: Where the Real Power Is", "minutes": 5,
+     "desc": "Why the second question matters most, 6 follow-up phrases ready to use, and how to save a useful answer to keep.",
+     "url": f"{_COURSE_BASE}/the-follow-up-where-the-real-power-is-2/"},
+]
+
+
+def _suggest(num, desc):
+    lesson = COURSE_LESSONS[num - 1]
+    return {"title": f"Lesson {num}: {lesson['title']}", "desc": desc, "url": lesson["url"]}
+
+
 LESSON_SUGGESTIONS = {
-    "Money & Bills": {
-        "title": "Lesson 3: Don't Get Scammed",
-        "desc": "Protect your money — learn to spot scams before they get you.",
-        "url": f"{_COURSE_BASE}/dont-get-scammed/",
-    },
-    "Staying Connected": {
-        "title": "Lesson 2: Talk to AI",
-        "desc": "Use AI and your phone to stay connected with the people who matter.",
-        "url": f"{_COURSE_BASE}/talk-to-ai/",
-    },
-    "Home & Safety": {
-        "title": "Lesson 3: Don't Get Scammed",
-        "desc": "Stay safe at home and online — know the warning signs.",
-        "url": f"{_COURSE_BASE}/dont-get-scammed/",
-    },
-    "Creative & Fun": {
-        "title": "Lesson 1: Your Phone is More Powerful Than You Think",
-        "desc": "Unlock what your phone can really do — photos, stories, and more.",
-        "url": f"{_COURSE_BASE}/lessons-welcome/",
-    },
+    "Money & Bills": _suggest(2, "Protect your money — learn to spot scams before they get you."),
+    "Staying Connected": _suggest(4, "Use AI and your voice to get real help, any time."),
+    "Home & Safety": _suggest(2, "Stay safe at home and online — know the warning signs."),
+    "Creative & Fun": _suggest(5, "Ask AI about something that matters to you — like your life story."),
     "All Topics": {
         "title": "Start the Free Course",
-        "desc": "Three free lessons. No tech background needed. Start today.",
-        "url": "https://50plustechbridge.com/courses/50techbridge/",
+        "desc": "Six short lessons. No tech background needed. Free to join.",
+        "url": COURSE_URL,
     },
 }
 
@@ -906,33 +924,15 @@ if page == "Home":
     <p style="color:#A8B8CC; font-size:18px; margin-bottom:12px;">Start with our free lessons — then ask Barb anything.</p>
     """, unsafe_allow_html=True)
 
-    # Free lesson cards first
-    _COURSE_BASE = "https://50plustechbridge.com/courses/50techbridge/lessons"
-    st.markdown(f"""
-    <div style="margin-bottom:8px;">
-        <a href="{_COURSE_BASE}/lessons-welcome/" target="_blank" style="text-decoration:none;">
-            <div class="lmt-cat-card" style="border-left:3px solid #C8942E;">
-                <div class="cat-title">📱 Lesson 1 — Your Phone is More Powerful Than You Think</div>
-                <div class="cat-example">Make text bigger, bolder, and easier to read in 5 minutes.</div>
-            </div>
-        </a>
-    </div>
-    <div style="margin-bottom:8px;">
-        <a href="{_COURSE_BASE}/talk-to-ai/" target="_blank" style="text-decoration:none;">
-            <div class="lmt-cat-card" style="border-left:3px solid #C8942E;">
-                <div class="cat-title">🤖 Lesson 2 — Talk to AI</div>
-                <div class="cat-example">Set reminders with your voice, ask AI questions, get real help.</div>
-            </div>
-        </a>
-    </div>
-    <div style="margin-bottom:16px;">
-        <a href="{_COURSE_BASE}/dont-get-scammed/" target="_blank" style="text-decoration:none;">
-            <div class="lmt-cat-card" style="border-left:3px solid #C8942E;">
-                <div class="cat-title">🛡️ Lesson 3 — Don't Get Scammed</div>
-                <div class="cat-example">Spot scams before they get you — protect your money and information.</div>
-            </div>
-        </a>
-    </div>
+    # Free lesson cards: all six, same order and wording as the course page
+    lesson_cards = "".join(
+        f'<div style="margin-bottom:8px;"><a href="{l["url"]}" target="_blank" style="text-decoration:none;">'
+        f'<div class="lmt-cat-card" style="border-left:3px solid #C8942E;">'
+        f'<div class="cat-title">{l["icon"]} Lesson {l["num"]} — {l["title"]} '
+        f'<span style="color:#A8B8CC; font-weight:400; font-size:18px;">· {l["minutes"]} min</span></div>'
+        f'<div class="cat-example">{l["desc"]}</div></div></a></div>'
+        for l in COURSE_LESSONS)
+    st.markdown(lesson_cards + """
     <p style="color:#A8B8CC; font-size:18px; margin:12px 0 8px;">Or ask Barb about any of these topics:</p>
     """, unsafe_allow_html=True)
 
@@ -1165,25 +1165,17 @@ elif page == "Resources":
 
     st.markdown("<hr style='border-color:#1E3A5F; margin:16px 0;'>", unsafe_allow_html=True)
 
-    st.markdown("""
+    _resource_lessons = "".join(
+        f'<li style="margin-top:12px;"><strong>Lesson {l["num"]}: {l["title"]}</strong> '
+        f'<span style="color:#A8B8CC; font-size:18px;">· {l["minutes"]} min</span><br>'
+        f'<span style="color:#A8B8CC; font-size:18px;">{l["desc"]}</span><br>'
+        f'<a href="{l["url"]}" target="_blank">Take Lesson {l["num"]} →</a></li>'
+        for l in COURSE_LESSONS)
+    st.markdown(f"""
     <div class="lmt-section-card">
         <h3>📚 Free 50+TechBridge Lessons</h3>
         <ul>
-            <li>
-                <strong>Lesson 1: Your Phone is More Powerful Than You Think</strong><br>
-                <span style="color:#A8B8CC; font-size:18px;">Phone settings, text size, accessibility — 5 minutes.</span><br>
-                <a href="https://50plustechbridge.com/courses/50techbridge/lessons/lessons-welcome/" target="_blank">Take Lesson 1 →</a>
-            </li>
-            <li style="margin-top:12px;">
-                <strong>Lesson 2: Talk to AI</strong><br>
-                <span style="color:#A8B8CC; font-size:18px;">Use voice reminders, ask AI questions, get real help.</span><br>
-                <a href="https://50plustechbridge.com/courses/50techbridge/lessons/talk-to-ai/" target="_blank">Take Lesson 2 →</a>
-            </li>
-            <li style="margin-top:12px;">
-                <strong>Lesson 3: Don't Get Scammed</strong><br>
-                <span style="color:#A8B8CC; font-size:18px;">Spot scams, protect your money, stay safe online.</span><br>
-                <a href="https://50plustechbridge.com/courses/50techbridge/lessons/dont-get-scammed/" target="_blank">Take Lesson 3 →</a>
-            </li>
+{_resource_lessons}
         </ul>
     </div>
     """, unsafe_allow_html=True)
